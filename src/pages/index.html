@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <title>Perspective</title>
+</head>
+<body>
+    <div id="app">
+        <div id="content"></div>
+        <div id="settings">
+            <div class="container">
+                <label for="vertical-height">
+                    <p>Altura da vertical</p>
+                    <div class="range">
+                        <input type="range" name="vertical-height" id="vertical-height" min="0" max="550">
+                    </div>
+                </label>
+                <label for="vertical-position">
+                    <p>Posição da vertical</p>
+                    <div class="range">
+                        <input type="range" name="vertical-position" id="vertical-position" min="0">
+                    </div>
+                </label>
+                <label for="horizontal-position">
+                    <p>Posição da horizontal</p>
+                    <div class="range">
+                        <input type="range" name="horizontal-position" id="horizontal-position" min="0">
+                    </div>
+                </label>
+                <label for="focus-position-1">
+                    <p>F1</p>
+                    <div class="range">
+                        <input type="range" name="focus-position-1" id="focus-position-1" min="0">
+                    </div>
+                </label>
+                <label for="focus-position-2">
+                    <p>F2</p>
+                    <div class="range">
+                        <input type="range" name="focus-position-2" id="focus-position-2" min="0">
+                    </div>
+                </label>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="../assets/javascript/perspective.js"></script>
+</body>
+</html>

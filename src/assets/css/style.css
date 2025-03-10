@@ -1,0 +1,41 @@
+* {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+    overflow: hidden;
+}
+
+#app {
+    background-color: aliceblue;
+    display: flex; flex-direction: row;
+}
+
+#content {
+    height: 100vh; flex: 1;
+}
+
+#settings {
+    width: 300px; height: 100vh;
+    background-color: aquamarine;
+}
+
+#settings .container {
+    display: flex; flex-direction: column;
+    justify-content: start; align-items: center;
+
+    height: 100%; width: 90%;
+    margin: auto; padding: 10px;
+}
+
+#settings .container label {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+}
+
+#settings .container label .range {
+    display: flex;
+}
+
+#settings .container label input {
+    width: 100%; margin: 0 5px;
+}
