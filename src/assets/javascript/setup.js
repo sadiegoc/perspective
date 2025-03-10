@@ -39,6 +39,12 @@ class Vector {
         return vectorPolar;
     }
 
+    getYByX (x) {
+        const tg = Math.tan((this.vector.theta * (Math.PI / 180)))
+        const y = Math.abs(x - this.focus.x) * tg;
+        return y
+    }
+
     calculatePolar (Xo, Yo, x, y) {
         const t = (y - Yo) / (x - Xo)
         const tRad = Math.atan(t);
@@ -110,9 +116,12 @@ class Focus {
         this.x = x
         this.y = y
         this.vertical = vertical
+        this.secondayVertical = vertical
         this.vectors = [
             new Vector({ x: this.x, y: this.y }, this.vertical.origin),
             new Vector({ x: this.x, y: this.y }, this.vertical.point),
+            // new Vector({ x: this.x, y: this.y }, this.secondayVertical.origin),
+            // new Vector({ x: this.x, y: this.y }, this.secondayVertical.point),
         ]
         this.element = createElement('red', 'absolute', 2, 2, this.x, this.y)
     }
@@ -130,12 +139,23 @@ class Focus {
 
     updateVertical (vertical) {
         this.vertical = vertical;
+        
         this.update()
     }
 
     updateVectors () {
+        // console.log(this.vertical.origin.x - 80, this.vectors[0].getYByX(this.vertical.origin.x - 80))
         this.vectors[0].updateVector({ x: this.x, y: this.y }, this.vertical.origin)
         this.vectors[1].updateVector({ x: this.x, y: this.y }, this.vertical.point)
+        // this.vectors[2].updateVector({ x: this.x, y: this.y }, {
+        //     x: this.vertical.origin.x,
+        //     y: this.x > this.vertical.origin.x ? this.vectors[0].getYByX(this.vertical.origin.x + 100) : this.vectors[0].getYByX(this.vertical.origin.x - 100)
+        // })
+
+        // this.vectors[3].updateVector({ x: this.x, y: this.y }, {
+        //     x: this.vertical.point.x,
+        //     y: this.x > this.vertical.point.x ? this.vectors[0].getYByX(this.vertical.point.x + 100) : this.vectors[0].getYByX(this.vertical.point.x - 100)
+        // })
     }
 
     render () {
