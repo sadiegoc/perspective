@@ -1,6 +1,74 @@
 const Y_CENTER = (window.innerHeight / 2)
 const X_CONTENT = (window.innerWidth - 300)
 
+class Point {
+    constructor (x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    getPoint () {
+        return { x: this.x, y: this.y };
+    }
+
+    setPoint (x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+class Line {
+    constructor (origin, destiny) {
+        this.origin = new Point(origin);
+        this.destiny = new Point(destiny);
+        this.director = getDirector(this.origin, this.destiny);
+    }
+
+    getDirector () {
+        return {
+            a: this.destiny.x - this.origin.x,
+            b: this.destiny.y - this.origin.y
+        };
+    }
+
+    getPosition (t) {
+        return {
+            x: this.origin.x + this.director.a * t,
+            y: this.origin.y + this.director.b * t
+        };
+    }
+
+    getReducedEquation () {
+        return {
+            x: (y) => this.origin.x + (this.director.a * (y - this.origin.y)),
+            y: (x) => this.origin.y + (this.director.b * (x - this.origin.x))
+        };
+    }
+
+    getSize () {
+        const { x, y } = this.getDirector();
+        return Math.sqrt(x**2 + y**2);
+    }
+
+    getOrigin () {
+        return { ...this.origin };
+    }
+
+    getDestiny () {
+        return { ...this.destiny };
+    }
+
+    setOrigin (origin) {
+        this.origin = origin;
+        this.director = this.getDirector();
+    }
+    
+    setDestiny (destiny) {
+        this.destiny = destiny;
+        this.director = this.getDirector();
+    }
+}
+
 function createElement (color, position, width, height, left, bottom) {
     const element = document.createElement('div');
     element.style.backgroundColor = color;
@@ -166,27 +234,35 @@ class Focus {
 
 class PerspectiveScene {
     constructor (content) {
-        this.content = content;
-        this.vertical = new Vertical(400, 300, 350); // x=400, y=300, l=350
-        this.vertical.appendFocus({ x: 0, y: Y_CENTER });
-        this.vertical.appendFocus({ x: X_CONTENT, y: Y_CENTER });
-        this.horizontal = createElement('black', 'absolute', X_CONTENT, 2, 0, Y_CENTER);
+        // this.content = content;
+        // this.vertical = new Vertical(400, 300, 350); // x=400, y=300, l=350
+        // this.vertical.appendFocus({ x: 0, y: Y_CENTER });
+        // this.vertical.appendFocus({ x: X_CONTENT, y: Y_CENTER });
+        // this.horizontal = createElement('black', 'absolute', X_CONTENT, 2, 0, Y_CENTER);
 
-        this.content.append(this.vertical.element);
-        this.content.append(this.horizontal);
-        this.vertical.focusList.forEach(focus => {
-            focus.vectors.forEach(v => this.content.append(v.element));
-            this.content.append(focus.element);
-        });
+        // this.content.append(this.vertical.element);
+        // this.content.append(this.horizontal);
+        // this.vertical.focusList.forEach(focus => {
+        //     focus.vectors.forEach(v => this.content.append(v.element));
+        //     this.content.append(focus.element);
+        // });
+
+        this.horizonteLine = new Line({ x: 0, y: Y_CENTER}, { x: X_CONTENT, y: Y_CENTER});
+        this.focus1 = new Point ({ x: 400, y: Y_CENTER });
+        this.focus2 = new Point ({ x: X_CONTENT - 400, y: Y_CENTER });
+
+        this.vertical = new Line(
+            { x: X_CONTENT / 2, y: Y_CENTER - 400 },
+            { x: X_CONTENT / 2, y: Y_CENTER + 400 }
+        );
     }
 
-    updateVertical (x, y, t) {
-        this.vertical.setPosition(x, y, t);
-        this.vertical.update();
-    }
-
-    updateFocus (position, iFocus) {
-        this.vertical.focusList[iFocus].setPosition(position.x, position.y)
+    getAngleBetweenLines (v1, v2) {
+        const absoluteDotProduct = Math.abs((v1.a * v2.a) + (v1.b * v2.b));
+        const moduleV1 = Math.sqrt(v1.x**2 + v1.y**2);
+        const moduleV2 = Math.sqrt(v2.x**2 + v2.y**2);
+        const angle = absoluteDotProduct / (moduleV1 * moduleV2);
+        return angle;
     }
 }
 
