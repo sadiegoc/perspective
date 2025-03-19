@@ -75,13 +75,19 @@ class Point {
 }
 
 class Line {
-    constructor (origin, destiny) {
+    constructor (origin, destiny, color) {
         this.origin = new Point(origin.x, origin.y);
         this.destiny = new Point(destiny.x, destiny.y);
         this.director = this.getDirector();
-        this.element = createElement('blue', this.getSize(), 1, this.origin.x, this.origin.y);
-        this.angle = this.director.a === 0 ? 90 : tanToDegree(this.director.b / this.director.a);
+        this.element = createElement(color, this.getSize(), 1, this.origin.x, this.origin.y);
+        this.angle = this.getAngle()
         this.render();
+    }
+
+    getAngle () {
+        if (this.destiny.x >= this.origin.x)
+            return this.director.a === 0 ? -90 : -tanToDegree(this.director.b / this.director.a);
+        else return -tanToDegree(this.director.b / this.director.a) + 180;
     }
 
     getDirector () {
@@ -111,24 +117,24 @@ class Line {
     }
 
     getOrigin () {
-        return { ...this.origin };
+        return { x: this.origin.x, y: this.origin.y };
     }
 
     getDestiny () {
-        return { ...this.destiny };
+        return { x: this.destiny.x, y: this.destiny.y };
     }
 
     setOrigin (x, y) {
         this.origin = { x, y };
         this.director = this.getDirector();
-        this.angle = this.director.a === 0 ? 90 : tanToDegree(this.director.b / this.director.a);
+        this.angle = this.getAngle();
         this.render();
     }
     
     setDestiny (x, y) {
         this.destiny = { x, y };
         this.director = this.getDirector();
-        this.angle = this.director.a === 0 ? 90 : tanToDegree(this.director.b / this.director.a);
+        this.angle = this.getAngle();
         this.render();
     }
 
@@ -136,33 +142,66 @@ class Line {
         this.element.style.left = `${this.origin.x}px`;
         this.element.style.bottom = `${this.origin.y}px`;
         this.element.style.width = `${this.getSize()}px`;
-        this.element.style.transform = `rotate(-${this.angle}deg)`;
+        this.element.style.transform = `rotate(${this.angle}deg)`;
     }
 }
 
 class PerspectiveScene {
     constructor (content) {
-        this.horizonteLine = new Line({ x: 0, y: Y_CENTER}, { x: X_CONTENT, y: Y_CENTER});
-        this.focus1 = new Point ({ x: 400, y: Y_CENTER });
-        this.focus2 = new Point ({ x: X_CONTENT - 400, y: Y_CENTER });
+        this.horizonte = new Line({ x: 0, y: Y_CENTER}, { x: X_CONTENT, y: Y_CENTER}, 'blue');
+        this.focus1 = new Point (100, Y_CENTER );
+        this.focus2 = new Point (X_CONTENT - 100, Y_CENTER );
         this.vertical = new Line(
-            { x: X_CONTENT / 2, y: Y_CENTER - 100 },
-            { x: X_CONTENT / 2, y: Y_CENTER }
+            { x: X_CONTENT / 2, y: Y_CENTER - 200 },
+            { x: X_CONTENT / 2, y: Y_CENTER + 100 },
+            'red'
         );
 
-        content.append(this.horizonteLine.element);
+        
+        this.line1 = new Line(this.focus1.getPoint(), this.vertical.getOrigin(), 'red');
+        this.line2 = new Line(this.focus1.getPoint(), this.vertical.getDestiny(), 'black');
+        this.line3 = new Line(this.focus2.getPoint(), this.vertical.getOrigin(), 'yellow');
+        this.line4 = new Line(this.focus2.getPoint(), this.vertical.getDestiny(), 'green');
+
+        content.append(this.horizonte.element);
         content.append(this.vertical.element);
         content.append(this.focus1.element);
         content.append(this.focus2.element);
+
+        content.append(this.line1.element);
+        content.append(this.line2.element);
+        content.append(this.line3.element);
+        content.append(this.line4.element);
     }
 
     updateVertical (x, y, size) {
         this.vertical.setOrigin(x, y);
         this.vertical.setDestiny(x, y + size);
+        this.updateLines();
+    }
+
+    updateFocus (focus1, focus2) {
+        this.focus1.setPoint(focus1.x, focus1.y);
+        this.focus2.setPoint(focus2.x, focus2.y);
+        this.updateLines();
+    }
+
+    updateLines () {
+        this.line1.setOrigin(this.focus1.getPoint().x, this.focus1.getPoint().y);
+        this.line1.setDestiny(this.vertical.getOrigin().x, this.vertical.getOrigin().y);
+        
+        this.line2.setOrigin(this.focus1.getPoint().x, this.focus1.getPoint().y);
+        this.line2.setDestiny(this.vertical.getDestiny().x, this.vertical.getDestiny().y);
+        
+        this.line3.setOrigin(this.focus2.getPoint().x, this.focus2.getPoint().y);
+        this.line3.setDestiny(this.vertical.getOrigin().x, this.vertical.getOrigin().y);
+        
+        this.line4.setOrigin(this.focus2.getPoint().x, this.focus2.getPoint().y);
+        this.line4.setDestiny(this.vertical.getDestiny().x, this.vertical.getDestiny().y);
     }
 
     render () {
-        this.horizonteLine.render()
+        this.horizonte.render()
         this.vertical.render()
         this.focus1.render()
         this.focus2.render()
@@ -188,10 +227,17 @@ horizontalPosition.addEventListener('input', (event) => {
 
 focus1Position.addEventListener('input', (event) => {
     const fugax = parseInt(event.target.value);
-    scene.updateFocus({ x: fugax, y: Y_CENTER }, 0);
+    console.log(scene.focus1.x)
+    scene.updateFocus(
+        { x: fugax, y: Y_CENTER },
+        { x: scene.focus2.x, y: scene.focus2.y },
+    );
 });
-
+    
 focus2Position.addEventListener('input', (event) => {
     const fugax = parseInt(event.target.value);
-    scene.updateFocus({ x: fugax, y: Y_CENTER }, 1);
+    scene.updateFocus(
+        { x: scene.focus1.x, y: scene.focus1.y },
+        { x: fugax, y: Y_CENTER },
+    );
 });
