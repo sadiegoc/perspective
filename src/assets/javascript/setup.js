@@ -12,13 +12,21 @@ const X_CONTENT = (window.innerWidth - 300);
 function setMaxFields () {
     verticalHeight.max = window.innerHeight
     verticalPosition.max = window.innerHeight
-    verticalPosition.min = 0
     horizontalPosition.max = X_CONTENT
     focus1Position.max = X_CONTENT
     focus2Position.max = X_CONTENT
 }
 
+function setFirstSettings () {
+    focus1Position.value = 100;
+    focus2Position.value = X_CONTENT - 100;
+    horizontalPosition.value = X_CONTENT / 2;
+    verticalPosition.value = Y_CENTER - 200
+    verticalHeight.value = 300
+}
+
 setMaxFields()
+setFirstSettings()
 
 function createElement (color, width, height, left, bottom) {
     const element = document.createElement('div');
