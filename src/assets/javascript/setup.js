@@ -227,7 +227,6 @@ horizontalPosition.addEventListener('input', (event) => {
 
 focus1Position.addEventListener('input', (event) => {
     const fugax = parseInt(event.target.value);
-    console.log(scene.focus1.x)
     scene.updateFocus(
         { x: fugax, y: Y_CENTER },
         { x: scene.focus2.x, y: scene.focus2.y },
