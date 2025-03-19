@@ -79,7 +79,7 @@ class Line {
         this.origin = new Point(origin.x, origin.y);
         this.destiny = new Point(destiny.x, destiny.y);
         this.director = this.getDirector();
-        this.element = createElement(color, this.getSize(), 1, this.origin.x, this.origin.y);
+        this.element = createElement(color, this.getSize(), 2, this.origin.x, this.origin.y);
         this.angle = this.getAngle()
         this.render();
     }
@@ -148,20 +148,20 @@ class Line {
 
 class PerspectiveScene {
     constructor (content) {
-        this.horizonte = new Line({ x: 0, y: Y_CENTER}, { x: X_CONTENT, y: Y_CENTER}, 'blue');
+        this.horizonte = new Line({ x: 0, y: Y_CENTER}, { x: X_CONTENT, y: Y_CENTER}, 'black');
         this.focus1 = new Point (100, Y_CENTER );
         this.focus2 = new Point (X_CONTENT - 100, Y_CENTER );
         this.vertical = new Line(
             { x: X_CONTENT / 2, y: Y_CENTER - 200 },
             { x: X_CONTENT / 2, y: Y_CENTER + 100 },
-            'red'
+            'black'
         );
 
         
         this.line1 = new Line(this.focus1.getPoint(), this.vertical.getOrigin(), 'red');
-        this.line2 = new Line(this.focus1.getPoint(), this.vertical.getDestiny(), 'black');
-        this.line3 = new Line(this.focus2.getPoint(), this.vertical.getOrigin(), 'yellow');
-        this.line4 = new Line(this.focus2.getPoint(), this.vertical.getDestiny(), 'green');
+        this.line2 = new Line(this.focus1.getPoint(), this.vertical.getDestiny(), 'green');
+        this.line3 = new Line(this.focus2.getPoint(), this.vertical.getOrigin(), 'gold');
+        this.line4 = new Line(this.focus2.getPoint(), this.vertical.getDestiny(), 'darkorange');
 
         content.append(this.horizonte.element);
         content.append(this.vertical.element);
